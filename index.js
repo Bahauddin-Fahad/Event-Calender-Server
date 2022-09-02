@@ -21,59 +21,29 @@ async function run() {
   try {
     await client.connect();
 
-    const getCollection = (month) => {
-      const monthCollection = client.db("eventCalender").collection(month);
-      return monthCollection;
-    };
-    const januaryCollection = getCollection("January");
-    const februaryCollection = getCollection("February");
-    const marchCollection = getCollection("March");
-    const aprilCollection = getCollection("April");
-    const mayCollection = getCollection("May");
-    const juneCollection = getCollection("June");
-    const julyCollection = getCollection("July");
-    const augustCollection = getCollection("August");
-    const septemberCollection = getCollection("September");
-    const octoberCollection = getCollection("October");
-    const novemberCollection = getCollection("November");
-    const decemberCollection = getCollection("December");
+    const monthsCollection = client.db("eventCalender").collection("MonthName");
+    const daysCollection = client.db("eventCalender").collection("Days");
 
-    const getData = (month, monthCollection) => {
-      getDays(month, monthCollection);
-      getEvents(month, monthCollection);
-    };
+    app.get("/months", async (req, res) => {
+      const query = {};
+      const cursor = monthsCollection.find(query);
+      const months = await cursor.toArray();
+      res.send(months);
+    });
 
-    getData("january", januaryCollection);
-    getData("february", februaryCollection);
-    getData("march", marchCollection);
-    getData("april", aprilCollection);
-    getData("may", mayCollection);
-    getData("june", juneCollection);
-    getData("july", julyCollection);
-    getData("august", augustCollection);
-    getData("september", septemberCollection);
-    getData("october", octoberCollection);
-    getData("november", novemberCollection);
-    getData("december", decemberCollection);
-
-    function getDays(month, daysCollection) {
-      app.get(`/${month}`, async (req, res) => {
-        const query = {};
-        const cursor = daysCollection.find(query);
-        const days = await cursor.toArray();
-        res.send(days);
-      });
-    }
-
-    function getEvents(month, daysCollection) {
-      app.get(`/${month}/:id`, async (req, res) => {
-        const id = req.params.id;
-        const query = { _id: ObjectId(id) };
-        const events = await daysCollection.findOne(query);
-        delete events?._id;
-        res.send(events);
-      });
-    }
+    app.get("/:monthName", async (req, res) => {
+      const monthName = req.params.monthName;
+      const query = { name: monthName };
+      const month = await monthsCollection.findOne(query);
+      res.send(month);
+    });
+    app.get("/day/:date", async (req, res) => {
+      const date = req.params.date;
+      const query = { date };
+      const events = await daysCollection.findOne(query);
+      delete events._id;
+      res.send(events);
+    });
   } finally {
   }
 }
