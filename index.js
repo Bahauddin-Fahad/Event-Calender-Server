@@ -35,12 +35,19 @@ async function run() {
       const monthName = req.params.monthName;
       const query = { name: monthName };
       const month = await monthsCollection.findOne(query);
+      if (month === null) {
+        res.status(404);
+      }
       res.send(month);
     });
     app.get("/day/:date", async (req, res) => {
       const date = req.params.date;
       const query = { date };
       const events = await daysCollection.findOne(query);
+
+      if (events === null) {
+        res.status(404);
+      }
       delete events._id;
       res.send(events);
     });
