@@ -48,7 +48,7 @@ async function run() {
       if (events === null) {
         res.status(404);
       }
-      delete events._id;
+      delete events?._id;
       res.send(events);
     });
   } finally {
