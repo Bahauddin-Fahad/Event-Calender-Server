@@ -21,34 +21,57 @@ async function run() {
   try {
     await client.connect();
 
-    const monthsCollection = client.db("eventCalender").collection("MonthName");
+    const languagesCollection = client
+      .db("eventCalender")
+      .collection("Languages");
+    const yearsCollection = client.db("eventCalender").collection("Years");
+    const monthsCollection = client.db("eventCalender").collection("Months");
     const daysCollection = client.db("eventCalender").collection("Days");
 
-    app.get("/months", async (req, res) => {
+    app.get("/languages", async (req, res) => {
       const query = {};
+      const cursor = languagesCollection.find(query);
+      const languages = await cursor.toArray();
+
+      res.send(languages);
+    });
+
+    app.get("/years", async (req, res) => {
+      const query = {};
+      const cursor = yearsCollection.find(query);
+      const years = await cursor.toArray();
+      res.send(years);
+    });
+
+    app.get("/:year/months", async (req, res) => {
+      const year = req.params.year;
+      const query = { year };
       const cursor = monthsCollection.find(query);
       const months = await cursor.toArray();
       res.send(months);
     });
 
-    app.get("/:monthName", async (req, res) => {
+    app.get("/:year/:monthName", async (req, res) => {
       const monthName = req.params.monthName;
-      const query = { name: monthName };
+      const year = req.params.year;
+      const query = { name: monthName, year };
       const month = await monthsCollection.findOne(query);
       if (month === null) {
         res.status(404);
       }
       res.send(month);
     });
-    app.get("/day/:date", async (req, res) => {
+    app.get("/day/:date/:language", async (req, res) => {
       const date = req.params.date;
-      const query = { date };
+      const language = req.params.language;
+      const query = { universalDate: date, language };
       const events = await daysCollection.findOne(query);
-
       if (events === null) {
         res.status(404);
       }
       delete events?._id;
+      delete events?.universalDate;
+      delete events?.language;
       res.send(events);
     });
   } finally {
