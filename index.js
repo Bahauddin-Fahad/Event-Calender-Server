@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+let json = require("./public/json.json");
 require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
@@ -46,8 +47,10 @@ async function run() {
     app.get("/:year/months", async (req, res) => {
       const year = req.params.year;
       const query = { year };
-      const cursor = monthsCollection.find(query);
-      const months = await cursor.toArray();
+      const cursor = yearsCollection.find(query);
+      const result = await cursor.toArray();
+      const months = result[0].months;
+
       res.send(months);
     });
 
@@ -73,6 +76,25 @@ async function run() {
       delete events?.universalDate;
       delete events?.language;
       res.send(events);
+    });
+
+    app.get("/json", async (req, res) => {
+      const keys = Object.keys(json);
+      const values = Object.values(json);
+      const data = [];
+      values.map((value) => {
+        const indexOfValue = values.indexOf(value);
+        let valueObj = value[0];
+        valueObj.language = "telegu";
+        keys.map((key) => {
+          const indexOfKey = keys.indexOf(key);
+          if (indexOfValue === indexOfKey) {
+            valueObj.universalDate = key;
+          }
+        });
+        data.push(valueObj);
+      });
+      res.send(data);
     });
   } finally {
   }
