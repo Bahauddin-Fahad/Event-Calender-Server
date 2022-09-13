@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 let json = require("./public/json.json");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { MongoClient, ServerApiVersion } = require("mongodb");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -33,7 +33,6 @@ async function run() {
       const query = {};
       const cursor = languagesCollection.find(query);
       const languages = await cursor.toArray();
-
       res.send(languages);
     });
 
@@ -47,10 +46,9 @@ async function run() {
     app.get("/:year/months", async (req, res) => {
       const year = req.params.year;
       const query = { year };
-      const cursor = yearsCollection.find(query);
-      const result = await cursor.toArray();
-      const months = result[0].months;
-
+      const cursor = monthsCollection.find(query);
+      const months = await cursor.toArray();
+      console.log(months);
       res.send(months);
     });
 
