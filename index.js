@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 let json = require("./public/json.json");
+let holiday = require("./public/holiday.json");
+require("./jsonCreate");
 require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 
@@ -28,6 +30,10 @@ async function run() {
     const yearsCollection = client.db("eventCalender").collection("Years");
     const monthsCollection = client.db("eventCalender").collection("Months");
     const daysCollection = client.db("eventCalender").collection("Days");
+    const days2Collection = client.db("eventCalender").collection("Days2");
+    const holidaysCollection = client
+      .db("eventCalender")
+      .collection("Holidays");
 
     app.get("/languages", async (req, res) => {
       const query = {};
@@ -62,6 +68,7 @@ async function run() {
       }
       res.send(month);
     });
+
     app.get("/day/:date/:language", async (req, res) => {
       const date = req.params.date;
       const language = req.params.language;
@@ -72,27 +79,156 @@ async function run() {
       }
       delete events?._id;
       delete events?.universalDate;
-      delete events?.language;
       res.send(events);
     });
 
-    app.get("/json", async (req, res) => {
-      const keys = Object.keys(json);
-      const values = Object.values(json);
-      const data = [];
-      values.map((value) => {
-        const indexOfValue = values.indexOf(value);
-        let valueObj = value[0];
-        valueObj.language = "telegu";
-        keys.map((key) => {
-          const indexOfKey = keys.indexOf(key);
-          if (indexOfValue === indexOfKey) {
-            valueObj.universalDate = key;
-          }
-        });
-        data.push(valueObj);
+    //New API's
+    app.get("/month", async (req, res) => {
+      let queries = {};
+      if (req.query.data_language) {
+        queries.data_language = req.query.data_language.toUpperCase();
+      }
+      (queries.Year = req.query.year),
+        (queries.Month = req.query.month.toLowerCase()),
+        (queries.app_language = req.query.app_language.toUpperCase());
+      const cursor = await days2Collection.find(queries);
+      const events = await cursor.toArray();
+      console.log(events.length);
+      delete events.map((event) => {
+        delete event?._id;
+        delete event?.Year;
+        delete event?.Month;
+        // delete event?.universalDate;
       });
-      res.send(data);
+      if (events.length === 0) {
+        return res.status(404).send({
+          status: "Failed",
+          message: "Couldn't Get the data",
+        });
+      }
+      res.status(200).send({
+        status: "Success",
+        message: "Successfully got the data",
+        data: events,
+      });
+    });
+    app.get("/day", async (req, res) => {
+      let queries = {};
+      if (req.query.data_language) {
+        queries.data_language = req.query.data_language.toUpperCase();
+      }
+      (queries.universalDate = req.query.date.toLowerCase()),
+        (queries.app_language = req.query.app_language.toUpperCase());
+
+      const cursor = await days2Collection.find(queries);
+      const day = await cursor.toArray();
+      delete day?._id;
+      delete day?.Year;
+      delete day?.Month;
+      // delete day?.universalDate;
+      if (day.length === 0) {
+        return res.status(404).send({
+          status: "Failed",
+          message: "Couldn't Get the data",
+        });
+      }
+      res.status(200).send({
+        status: "Success",
+        message: "Successfully got the data",
+        data: day,
+      });
+    });
+    app.get("/holiday", async (req, res) => {
+      let queries = {};
+      if (req.query.month) {
+        queries.month = req.query.month.toLowerCase();
+      }
+      if (req.query.data_language) {
+        queries.data_language = req.query.data_language.toUpperCase();
+      }
+      (queries.year = req.query.year),
+        (queries.app_language = req.query.app_language.toUpperCase());
+      const cursor = await holidaysCollection
+        .find(queries)
+        .project({ _id: 0, app_language: 0, data_language: 0 })
+        .sort({ _id: 1 });
+      const holidays = await cursor.toArray();
+      if (holidays.length === 0) {
+        return res.status(404).send({
+          status: "Failed",
+          message: "Couldn't Get the data",
+        });
+      }
+      res.status(200).send({
+        status: "Success",
+        message: "Successfully got the data",
+        data: holidays,
+      });
+    });
+    app.get("/festival", async (req, res) => {
+      let queries = {};
+      if (req.query.month) {
+        queries.Month = req.query.month.toLowerCase();
+      }
+      if (req.query.data_language) {
+        queries.data_language = req.query.data_language.toUpperCase();
+      }
+      (queries.Year = req.query.year),
+        (queries.app_language = req.query.app_language.toUpperCase());
+      const cursor = await days2Collection
+        .find(queries)
+        .project({
+          _id: 0,
+          date: 1,
+          festivals: 1,
+        })
+        .sort({ _id: 1 });
+      const festivals = await cursor.toArray();
+      if (festivals.length === 0) {
+        return res.status(404).send({
+          status: "Failed",
+          message: "Couldn't Get the data",
+        });
+      }
+      res.status(200).send({
+        status: "Success",
+        message: "Successfully got the data",
+        data: festivals,
+      });
+    });
+    app.get("/muhurat", async (req, res) => {
+      let queries = {};
+      if (req.query.month) {
+        queries.Month = req.query.month.toLowerCase();
+      }
+      if (req.query.data_language) {
+        queries.data_language = req.query.data_language.toUpperCase();
+      }
+      (queries.Year = req.query.year),
+        (queries.app_language = req.query.app_language.toUpperCase());
+      const cursor = await days2Collection
+        .find(queries)
+        .project({
+          _id: 0,
+          date: 1,
+          Property: 1,
+          Vivah: 1,
+          Vehicle: 1,
+          GrihaPravesh: 1,
+        })
+        .sort({ _id: 1 });
+      const muhurat = await cursor.toArray();
+      if (muhurat.length === 0) {
+        return res.status(404).send({
+          status: "Failed",
+          message: "Couldn't Get the data",
+        });
+      }
+      res.status(200).send({
+        status: "Success",
+        message: "Successfully got the data",
+        data: muhurat,
+      });
     });
   } finally {
   }
