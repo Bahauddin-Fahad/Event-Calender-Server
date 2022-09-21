@@ -1,8 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-let json = require("./public/json.json");
-let holiday = require("./public/holiday.json");
-require("./jsonCreate");
 require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 
