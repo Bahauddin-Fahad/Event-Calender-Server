@@ -88,15 +88,11 @@ async function run() {
       (queries.Year = req.query.year),
         (queries.Month = req.query.month.toLowerCase()),
         (queries.app_language = req.query.app_language.toUpperCase());
-      const cursor = await days2Collection.find(queries);
+      const cursor = await days2Collection
+        .find(queries)
+        .project({ _id: 0, Year: 0, Month: 0, universalDate: 0 });
       const events = await cursor.toArray();
-      console.log(events.length);
-      delete events.map((event) => {
-        delete event?._id;
-        delete event?.Year;
-        delete event?.Month;
-        // delete event?.universalDate;
-      });
+
       if (events.length === 0) {
         return res.status(404).send({
           status: "Failed",
@@ -117,12 +113,11 @@ async function run() {
       (queries.universalDate = req.query.date.toLowerCase()),
         (queries.app_language = req.query.app_language.toUpperCase());
 
-      const cursor = await days2Collection.find(queries);
+      const cursor = await days2Collection
+        .find(queries)
+        .project({ _id: 0, Year: 0, Month: 0, universalDate: 0 });
       const day = await cursor.toArray();
-      delete day?._id;
-      delete day?.Year;
-      delete day?.Month;
-      // delete day?.universalDate;
+
       if (day.length === 0) {
         return res.status(404).send({
           status: "Failed",
