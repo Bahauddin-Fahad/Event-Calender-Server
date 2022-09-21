@@ -1,5 +1,4 @@
 node_modules
 .env
+public/json.json 
 public/holiday.json
-public/json.json
-jsonCreate.js
