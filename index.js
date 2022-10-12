@@ -116,13 +116,13 @@ async function run() {
       (queries.universalDate = req.query.date.toLowerCase()),
         (queries.app_language = req.query.app_language.toUpperCase());
 
-      const cursor = await days2Collection
-        .find(queries)
-        .project({ _id: 0, Year: 0, Month: 0 })
-        .sort({ _id: 1 });
-      const day = await cursor.toArray();
+      const day = await days2Collection.findOne(queries);
 
-      if (day.length === 0) {
+      // .project({ _id: 0, Year: 0, Month: 0 })
+      // .sort({ _id: 1 });
+      // const day = await cursor.toArray();
+
+      if (day === null) {
         return res.status(404).send({
           status: "Failed",
           message: "Couldn't Get the data",
