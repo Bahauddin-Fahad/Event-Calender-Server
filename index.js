@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
+let json = require("./public/json.json");
+let holiday = require("./public/holiday.json");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -90,7 +92,8 @@ async function run() {
         (queries.app_language = req.query.app_language.toUpperCase());
       const cursor = await days2Collection
         .find(queries)
-        .project({ _id: 0, Year: 0, Month: 0, universalDate: 0 });
+        .project({ _id: 0, Year: 0, Month: 0 })
+        .sort({ universalDate: 1 });
       const events = await cursor.toArray();
 
       if (events.length === 0) {
@@ -115,7 +118,8 @@ async function run() {
 
       const cursor = await days2Collection
         .find(queries)
-        .project({ _id: 0, Year: 0, Month: 0, universalDate: 0 });
+        .project({ _id: 0, Year: 0, Month: 0 })
+        .sort({ _id: 1 });
       const day = await cursor.toArray();
 
       if (day.length === 0) {
@@ -124,11 +128,7 @@ async function run() {
           message: "Couldn't Get the data",
         });
       }
-      res.status(200).send({
-        status: "Success",
-        message: "Successfully got the data",
-        data: day,
-      });
+      res.status(200).send(day);
     });
     app.get("/holiday", async (req, res) => {
       let queries = {};
