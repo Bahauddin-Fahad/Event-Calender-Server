@@ -2,8 +2,6 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
-// let json = require("./public/json.json");
-// let holiday = require("./public/holiday.json");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -108,6 +106,7 @@ async function run() {
         data: events,
       });
     });
+
     app.get("/day", async (req, res) => {
       let queries = {};
       if (req.query.data_language) {
@@ -116,11 +115,9 @@ async function run() {
       (queries.universalDate = req.query.date.toLowerCase()),
         (queries.app_language = req.query.app_language.toUpperCase());
 
-      const day = await days2Collection.findOne(queries);
-
-      // .project({ _id: 0, Year: 0, Month: 0 })
-      // .sort({ _id: 1 });
-      // const day = await cursor.toArray();
+      const day = await days2Collection.findOne(queries, {
+        projection: { _id: 0, Year: 0, Month: 0 },
+      });
 
       if (day === null) {
         return res.status(404).send({
