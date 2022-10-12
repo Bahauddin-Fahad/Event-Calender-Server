@@ -27,7 +27,7 @@ async function run() {
     const yearsCollection = client.db("eventCalender").collection("Years");
     const monthsCollection = client.db("eventCalender").collection("Months");
     const daysCollection = client.db("eventCalender").collection("Days");
-    const days2Collection = client.db("eventCalender").collection("Days2");
+    // const days2Collection = client.db("eventCalender").collection("Days2");
     const holidaysCollection = client
       .db("eventCalender")
       .collection("Holidays");
@@ -88,7 +88,7 @@ async function run() {
       (queries.Year = req.query.year),
         (queries.Month = req.query.month.toLowerCase()),
         (queries.app_language = req.query.app_language.toUpperCase());
-      const cursor = await days2Collection
+      const cursor = await daysCollection
         .find(queries)
         .project({ _id: 0, Year: 0, Month: 0 })
         .sort({ universalDate: 1 });
@@ -115,7 +115,7 @@ async function run() {
       (queries.universalDate = req.query.date.toLowerCase()),
         (queries.app_language = req.query.app_language.toUpperCase());
 
-      const day = await days2Collection.findOne(queries);
+      const day = await daysCollection.findOne(queries);
 
       if (day === null) {
         return res.status(404).send({
