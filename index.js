@@ -115,9 +115,7 @@ async function run() {
       (queries.universalDate = req.query.date.toLowerCase()),
         (queries.app_language = req.query.app_language.toUpperCase());
 
-      const day = await days2Collection.findOne(queries, {
-        projection: { _id: 0, Year: 0, Month: 0 },
-      });
+      const day = await days2Collection.findOne(queries);
 
       if (day === null) {
         return res.status(404).send({
