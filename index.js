@@ -90,7 +90,6 @@ async function run() {
         (queries.app_language = req.query.app_language.toUpperCase());
       const cursor = await daysCollection
         .find(queries)
-        .project({ _id: 0, Year: 0, Month: 0 })
         .sort({ universalDate: 1 });
       const events = await cursor.toArray();
 
@@ -100,11 +99,7 @@ async function run() {
           message: "Couldn't Get the data",
         });
       }
-      res.status(200).send({
-        status: "Success",
-        message: "Successfully got the data",
-        data: events,
-      });
+      res.status(200).send(events);
     });
 
     app.get("/day", async (req, res) => {
@@ -125,6 +120,7 @@ async function run() {
       }
       res.status(200).send(day);
     });
+
     app.get("/holiday", async (req, res) => {
       let queries = {};
       if (req.query.month) {
@@ -217,6 +213,174 @@ async function run() {
         data: muhurat,
       });
     });
+
+    // let json = require("./public/json.json");
+    // let holiday = require("./public/holiday.json");
+
+    // app.get("/json", async (req, res) => {
+    //     const keys = Object.keys(json);
+    //     const values = Object.values(json);
+    //     const data = [];
+    //     values.map((value) => {
+    //       const indexOfValue = values.indexOf(value);
+    //       let valueObj = value[0];
+    //       valueObj.language = "telegu";
+    //       keys.map((key) => {
+    //         const indexOfKey = keys.indexOf(key);
+    //         if (indexOfValue === indexOfKey) {
+    //           valueObj.universalDate = key;
+    //         }
+    //       });
+    //       data.push(valueObj);
+    //     });
+    //     res.send(data);
+    //   });
+
+    //   app.get("/holiday", async (req, res) => {
+    //     const keys = Object.keys(holiday);
+    //     const values = Object.values(holiday);
+    //     keys.map((key) => {
+    //       const indexOfKey = keys.indexOf(key);
+    //       values.map((value) => {
+    //         const indexOfValue = values.indexOf(value);
+    //         if (indexOfKey === indexOfValue) {
+    //           value.map((v1) => {
+    //             v1.map((v2) => {
+    //               json.map((singleJson) => {
+    //                 // singleJson[`${key} Holiday`] = "N/A";
+    //                 const jsondate = singleJson.universalDate.split(" ")[0];
+    //                 const day = v2.date.split(" ")[0];
+    //                 const month = v2.date.split(" ")[1];
+    //                 const date = v2.date.split(" ")[2];
+    //                 const year = v2.date.split(" ")[3];
+    //                 if (
+    //                   singleJson.universalDate.includes(day) &&
+    //                   jsondate === date &&
+    //                   singleJson.universalDate.includes(month) &&
+    //                   singleJson.universalDate.includes(year)
+    //                 ) {
+    //                   singleJson[`${key} Holiday`] = v2.title;
+    //                 }
+    //                 if (!singleJson["Hindu Holiday"]) {
+    //                   singleJson["Hindu Holiday"] = "N/A";
+    //                 }
+    //                 if (!singleJson["Islamic Holiday"]) {
+    //                   singleJson["Islamic Holiday"] = "N/A";
+    //                 }
+    //                 if (!singleJson["Christian Holiday"]) {
+    //                   singleJson["Christian Holiday"] = "N/A";
+    //                 }
+    //                 if (!singleJson["Government Holiday"]) {
+    //                   singleJson["Government Holiday"] = "N/A";
+    //                 }
+    //               });
+    //             });
+    //           });
+    //         }
+    //       });
+    //     });
+    //     res.send(json);
+    //   });
+
+    //   app.get("/insertMonthYear", (req, res) => {
+    //     const months = [
+    //       "January",
+    //       "February",
+    //       "March",
+    //       "April",
+    //       "May",
+    //       "June",
+    //       "July",
+    //       "August",
+    //       "September",
+    //       "October",
+    //       "November",
+    //       "December",
+    //     ];
+    //     json.map((singlejson) => {
+    //       const day = singlejson.universalDate;
+    //       const date = day.split(" ")[0];
+    //       const month = day.split(" ")[1];
+    //       const year = day.split(" ")[2];
+    //       singlejson.Month = month.toLowerCase();
+    //       singlejson.Year = year;
+    //       singlejson.universalDate = `${date}/${
+    //         months.indexOf(month) + 1
+    //       }/${year.slice(2, 4)}`;
+    //     });
+    //     res.send(json);
+    //   });
+
+    //   app.get("/convertHolidayDate", async (req, res) => {
+    //     // const keys = Object.keys(holiday);
+    //     const values = Object.values(holiday);
+    //     values.map((v1) => {
+    //       v1.map((v2) => {
+    //         v2.map((v3) => {
+    //           const date = v3.date.split(" ")[2];
+    //           const day = v3.date.split(" ")[0];
+    //           const month = v3.date.split(" ")[1];
+    //           const year = v3.date.split(" ")[3];
+    //           json.map((singleJson) => {
+    //             const jsondate = singleJson.universalDate.split(" ")[0];
+    //             if (
+    //               singleJson.universalDate.includes(day) &&
+    //               jsondate === date &&
+    //               singleJson.universalDate.includes(month) &&
+    //               singleJson.universalDate.includes(year)
+    //             ) {
+    //               v3.date = singleJson.universalDate;
+    //             }
+    //           });
+    //         });
+    //       });
+    //     });
+    //     res.send(holiday);
+    //   });
+
+    // app.get("/getHoliday", (req, res) => {
+    //   const keys = Object.keys(holiday);
+    //   const values = Object.values(holiday);
+    //   json.map((singleJson) => {
+    //     singleJson.app_language = "ML";
+    //     singleJson.data_language = "ML";
+    //     values.map((v1) => {
+    //       keys.map((key) => {
+    //         v1.map((v2) => {
+    //           v2.map((v3) => {
+    //             const month = v3.date.split(" ")[1].toLowerCase();
+
+    //             if (singleJson.month.includes(month)) {
+    //               if (holiday[key] === v1) {
+    //                 if (key === "Hindu") {
+    //                   if (singleJson.Hindu.indexOf(v3) === -1) {
+    //                     singleJson.Hindu.push(v3);
+    //                   }
+    //                 }
+    //                 if (key === "Islamic") {
+    //                   if (singleJson.Islamic.indexOf(v3) === -1) {
+    //                     singleJson.Islamic.push(v3);
+    //                   }
+    //                 }
+    //                 if (key === "Christian") {
+    //                   if (singleJson.Christian.indexOf(v3) === -1) {
+    //                     singleJson.Christian.push(v3);
+    //                   }
+    //                 }
+    //                 if (key === "Government") {
+    //                   if (singleJson.Government.indexOf(v3) === -1) {
+    //                     singleJson.Government.push(v3);
+    //                   }
+    //                 }
+    //               }
+    //             }
+    //           });
+    //         });
+    //       });
+    //     });
+    //   });
+    //   res.send(json);
+    // });
   } finally {
   }
 }
