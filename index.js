@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
+const moment = require("moment");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -27,7 +28,9 @@ async function run() {
     const yearsCollection = client.db("eventCalender").collection("Years");
     const monthsCollection = client.db("eventCalender").collection("Months");
     const daysCollection = client.db("eventCalender").collection("Days");
-    // const days2Collection = client.db("eventCalender").collection("Days2");
+    const panchangCollection = client
+      .db("eventCalender")
+      .collection("Panchang");
     const holidaysCollection = client
       .db("eventCalender")
       .collection("Holidays");
@@ -80,29 +83,29 @@ async function run() {
     });
 
     //New API's
-    app.get("/month", async (req, res) => {
-      let queries = {};
-      if (req.query.data_language) {
-        queries.data_language = req.query.data_language.toUpperCase();
-      }
-      (queries.Year = req.query.year),
-        (queries.Month = req.query.month.toLowerCase()),
-        (queries.app_language = req.query.app_language.toUpperCase());
-      const cursor = await daysCollection
-        .find(queries)
-        .sort({ universalDate: 1 });
-      const events = await cursor.toArray();
-
-      if (events.length === 0) {
-        return res.status(404).send({
-          status: "Failed",
-          message: "Couldn't Get the data",
-        });
-      }
-      res.status(200).send(events);
-    });
-
     app.get("/day", async (req, res) => {
+      // const date = moment(req.query.date).format("DD MM YY");
+      // // console.log(date);
+      // const momentDate = moment(date).format("DD MMMM YYYY dddd");
+      // const month = momentDate.split(" ")[1].toLowerCase();
+      // const year = parseInt(momentDate.split(" ")[2]);
+      // const app_language = req.query.app_language.toUpperCase();
+      // const data_language = req.query.data_language.toUpperCase();
+      // const monthData = await panchangCollection.findOne({
+      //   month,
+      //   year,
+      //   app_language,
+      //   data_language,
+      // });
+      // if (monthData === null) {
+      //   return res.status(404).send({
+      //     status: "Failed",
+      //     message: "Couldn't Get the data",
+      //   });
+      // } else {
+      //   const dayData = monthData[momentDate][0];
+      //   res.status(200).send(dayData);
+      // }
       let queries = {};
       if (req.query.data_language) {
         queries.data_language = req.query.data_language.toUpperCase();
@@ -119,6 +122,27 @@ async function run() {
         });
       }
       res.status(200).send(day);
+    });
+
+    app.get("/month", async (req, res) => {
+      const month = req.query.month.toLowerCase();
+      const year = parseInt(req.query.year);
+      const app_language = req.query.app_language.toUpperCase();
+      const data_language = req.query.data_language.toUpperCase();
+      const monthData = await panchangCollection.findOne({
+        month,
+        year,
+        app_language,
+        data_language,
+      });
+      if (monthData === null) {
+        return res.status(404).send({
+          status: "Failed",
+          message: "Couldn't Get the data",
+        });
+      } else {
+        res.status(200).send(monthData);
+      }
     });
 
     app.get("/holiday", async (req, res) => {
@@ -142,11 +166,7 @@ async function run() {
           message: "Couldn't Get the data",
         });
       }
-      res.status(200).send({
-        status: "Success",
-        message: "Successfully got the data",
-        data: holidays,
-      });
+      res.status(200).send(holidays);
     });
     app.get("/festival", async (req, res) => {
       let queries = {};
@@ -158,7 +178,7 @@ async function run() {
       }
       (queries.Year = req.query.year),
         (queries.app_language = req.query.app_language.toUpperCase());
-      const cursor = await days2Collection
+      const cursor = await daysCollection
         .find(queries)
         .project({
           _id: 0,
@@ -189,7 +209,7 @@ async function run() {
       }
       (queries.Year = req.query.year),
         (queries.app_language = req.query.app_language.toUpperCase());
-      const cursor = await days2Collection
+      const cursor = await daysCollection
         .find(queries)
         .project({
           _id: 0,
