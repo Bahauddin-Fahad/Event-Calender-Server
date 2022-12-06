@@ -99,34 +99,6 @@ async function run() {
         });
       }
       res.status(200).send(day);
-
-      //  const dateQuery = req.query.date.split("/");
-      //  const dayQuery = dateQuery[0];
-      //  const monthQuery = dateQuery[1];
-      //  const yearQuery = dateQuery[2];
-      //  const formattedDate = `${monthQuery}/${dayQuery}/${yearQuery}`;
-      //  const momentDate = moment(formattedDate).format("DD MMMM YYYY dddd");
-      //  const month = momentDate.split(" ")[1].toLowerCase();
-      //  const year = parseInt(momentDate.split(" ")[2]);
-      //  const app_language = req.query.app_language.toUpperCase();
-      //  const data_language = req.query.data_language.toUpperCase();
-
-      //  const monthData = await panchangCollection.findOne({
-      //    month,
-      //    year,
-      //    app_language,
-      //    data_language,
-      //  });
-
-      //  if (monthData === null) {
-      //    return res.status(404).send({
-      //      status: "Failed",
-      //      message: "Couldn't Get the data",
-      //    });
-      //  } else {
-      //    const dayData = monthData[momentDate][0];
-      //    res.status(200).send(dayData);
-      //  }
     });
 
     app.get("/month", async (req, res) => {
@@ -164,7 +136,7 @@ async function run() {
       queries.data_language = req.query.data_language.toUpperCase();
       queries.year = parseInt(req.query.year);
       queries.app_language = req.query.app_language.toUpperCase();
-      console.log(queries);
+
       const holidays = await holidaysCollection.findOne(queries, {
         projection: { _id: 0 },
       });
@@ -189,8 +161,8 @@ async function run() {
       if (req.query.data_language) {
         queries.data_language = req.query.data_language.toUpperCase();
       }
-      (queries.Year = req.query.year),
-        (queries.app_language = req.query.app_language.toUpperCase());
+      queries.Year = req.query.year;
+      queries.app_language = req.query.app_language.toUpperCase();
       const cursor = await daysCollection
         .find(queries)
         .project({
@@ -275,36 +247,6 @@ async function run() {
         message: "Successfully got the data",
         data: muhurat,
       });
-    });
-
-    let json = require("./public/json.json");
-    app.get("/json", async (req, res) => {
-      const months = [
-        "january",
-        "february",
-        "march",
-        "april",
-        "may",
-        "june",
-        "july",
-        "august",
-        "september",
-        "october",
-        "november",
-        "december",
-      ];
-
-      const ArrayOfKeys = Object.keys(json);
-      ArrayOfKeys.map((key) => {
-        months.map((month) => {
-          if (months.indexOf(month) === ArrayOfKeys.indexOf(key)) {
-            json[key].month = month;
-            json[key].year = 2025;
-            (json[key].app_language = "TE"), (json[key].data_language = "TE");
-          }
-        });
-      });
-      res.send(json);
     });
   } finally {
   }
