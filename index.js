@@ -179,40 +179,6 @@ async function run() {
         });
       }
       res.status(200).send(festivals);
-
-      // let queries = {};
-      // let festivals = [];
-      // if (req.query.month) {
-      //   queries.month = req.query.month.toLowerCase();
-      // }
-      // (queries.year = parseInt(req.query.year)),
-      //   (queries.app_language = req.query.app_language.toUpperCase());
-      // queries.data_language = req.query.data_language.toUpperCase();
-
-      // const monthData = await panchangCollection
-      //   .find(queries, { projection: { _id: 0 } })
-      //   .toArray();
-      // if (monthData === null) {
-      //   return res.status(404).send({
-      //     status: "Failed",
-      //     message: "Couldn't Get the data",
-      //   });
-      // }
-      // monthData.map((singleMonthData) => {
-      //   const values = Object.values(singleMonthData);
-
-      //   values.map((value) => {
-      //     if (typeof value === "object") {
-      //       const data = value[0];
-      //       let singleFestivalData = {};
-      //       singleFestivalData.date = data?.date;
-      //       singleFestivalData.festivals = data?.festivals;
-      //       festivals.push(singleFestivalData);
-      //     }
-      //   });
-      // });
-
-      // res.status(200).send(festivals);
     });
     app.get("/muhurat", async (req, res) => {
       let queries = {};
