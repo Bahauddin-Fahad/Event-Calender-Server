@@ -1,13 +1,13 @@
-import express, { json } from "express";
-import cors from "cors";
+const express = require("express");
+const cors = require("cors");
 require("dotenv").config();
-import { MongoClient, ServerApiVersion } from "mongodb";
+const { MongoClient, ServerApiVersion } = require("mongodb");
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(json());
+app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@clustereventcalender.ywkdpkw.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -139,7 +139,6 @@ async function run() {
       const holidays = await holidaysCollection.findOne(queries, {
         projection: { _id: 0 },
       });
-
       if (holidays === null) {
         return res.status(404).send({
           status: "Failed",
@@ -176,6 +175,7 @@ async function run() {
       }
       res.status(200).send(festivals);
     });
+
     app.get("/muhurat", async (req, res) => {
       let queries = {};
       if (req.query.month) {
