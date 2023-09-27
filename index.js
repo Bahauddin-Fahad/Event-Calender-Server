@@ -300,7 +300,7 @@ async function run() {
     });
 
     // add a Payment to db
-    app.post("/payment", async (req, res) => {
+    app.post("/save-payment", async (req, res) => {
       const details = req.body;
       details.price = parseInt(details?.price);
       details.language = details?.language.toUpperCase();
