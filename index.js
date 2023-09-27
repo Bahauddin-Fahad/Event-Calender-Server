@@ -299,9 +299,9 @@ async function run() {
           data: payments,
         });
       } catch (error) {
-        res.status(400).send({
-          status: 400,
-          message: "Data can't be inserted",
+        res.status(404).send({
+          status: 404,
+          message: "Could not get the data",
           error: error.message,
         });
       }
