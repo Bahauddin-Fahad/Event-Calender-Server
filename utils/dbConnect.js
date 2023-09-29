@@ -1,5 +1,5 @@
 const { MongoClient } = require("mongodb");
-const connectionString = process.env.ATLAS_URI;
+const connectionString = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@clustereventcalender.ywkdpkw.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

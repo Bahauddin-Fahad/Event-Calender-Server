@@ -66,4 +66,8 @@ app.get("/", (req, res) => {
   res.send("Hello From Bharat-Calendar!");
 });
 
+app.all("*", (req, res) => {
+  res.send("No Route Found");
+});
+
 app.use(`/`, cors(corsOptions), expressRouter);
