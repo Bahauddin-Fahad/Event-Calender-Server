@@ -26,12 +26,12 @@ module.exports.getMuhuratData = async (req, res) => {
   const muhurat = await cursor.toArray();
   if (muhurat.length === 0) {
     return res.status(404).send({
-      status: "Failed",
+      status: 404,
       message: "Couldn't Get the data",
     });
   }
   res.status(200).send({
-    status: "Success",
+    status: 200,
     message: "Successfully got the data",
     data: muhurat,
   });

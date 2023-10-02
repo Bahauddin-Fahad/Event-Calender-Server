@@ -14,6 +14,7 @@ const panchangRoute = require("./routes/panchang.route");
 const festivalRoute = require("./routes/festival.route");
 const muhuratRoute = require("./routes/muhurat.route");
 const paymentRoute = require("./routes/payment.route");
+const consultAstrologyRoute = require("./routes/consult_astrology.route");
 
 app.use(cors());
 app.use(express.json());
@@ -23,6 +24,7 @@ var corsOptions = {
   origin: "*",
   optionsSuccessStatus: 200,
 };
+
 // var options = {
 //   key: fs.readFileSync(
 //     "/etc/letsencrypt/live/debugpanchang.exaweb.in/privkey.pem"
@@ -53,6 +55,7 @@ app.use("/day", panchangRoute);
 app.use("/festival", festivalRoute);
 app.use("/muhurat", muhuratRoute);
 app.use("/payments", paymentRoute);
+app.use("/consult-astrology", consultAstrologyRoute);
 
 // async function run() {
 //   try {

@@ -23,7 +23,7 @@ module.exports.getFestivalData = async (req, res) => {
   const festivals = await cursor.toArray();
   if (festivals.length === 0) {
     return res.status(404).send({
-      status: "Failed",
+      status: 404,
       message: "Couldn't Get the data",
     });
   }

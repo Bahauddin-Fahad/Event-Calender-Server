@@ -20,7 +20,7 @@ module.exports.getHolidayData = async (req, res, next) => {
 
   if (holidays === null) {
     return res.status(404).send({
-      status: "Failed",
+      status: 404,
       message: "Couldn't Get the data",
     });
   }
