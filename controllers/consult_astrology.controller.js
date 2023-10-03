@@ -7,7 +7,7 @@ module.exports.getConsultAstrologyData = async (req, res) => {
     const payments = await cursor.toArray();
     res.status(200).json({
       status: 200,
-      message: "Successfully Got the payment data",
+      message: "Successfully Got the Consult Astrology data",
       data: payments,
     });
   } catch (error) {
@@ -32,7 +32,7 @@ module.exports.saveConsultAstrologyData = async (req, res) => {
     details._id = insertedId;
     res.status(200).send({
       status: 200,
-      message: "Successfully inserted the payment data",
+      message: "Successfully inserted the Consult Astrology data",
       data: details,
     });
   } catch (error) {
