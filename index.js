@@ -15,6 +15,8 @@ const festivalRoute = require("./routes/festival.route");
 const muhuratRoute = require("./routes/muhurat.route");
 const paymentRoute = require("./routes/payment.route");
 const consultAstrologyRoute = require("./routes/consult_astrology.route");
+const occasionRoute = require("./routes/occasion.route");
+const bhaktiPromotionRoute = require("./routes/bhakti/promotion.route");
 
 app.use(cors());
 app.use(express.json());
@@ -56,6 +58,8 @@ app.use("/festival", festivalRoute);
 app.use("/muhurat", muhuratRoute);
 app.use("/payments", paymentRoute);
 app.use("/consult-astrology", consultAstrologyRoute);
+app.use("/occasions", occasionRoute);
+app.use("/bhakti/promotion", bhaktiPromotionRoute);
 
 // async function run() {
 //   try {

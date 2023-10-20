@@ -4,13 +4,13 @@ module.exports.getFestivalData = async (req, res) => {
   const db = getDb();
   let queries = {};
   if (req.query.month) {
-    queries.Month = req.query.month.toLowerCase();
+    queries.Month = req.query?.month?.toLowerCase();
   }
   if (req.query.data_language) {
-    queries.data_language = req.query.data_language.toUpperCase();
+    queries.data_language = req.query?.data_language?.toUpperCase();
   }
   queries.Year = req.query.year;
-  queries.app_language = req.query.app_language.toUpperCase();
+  queries.app_language = req.query?.app_language?.toUpperCase();
   const cursor = await db
     .collection("Days")
     .find(queries)
