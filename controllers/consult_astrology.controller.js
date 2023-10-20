@@ -11,11 +11,15 @@ module.exports.getConsultAstrologyData = async (req, res) => {
   );
 
   let queries = {};
-  if (req.query?.language !== "all") {
-    queries.language = req.query?.language?.toUpperCase();
+  if (req.query?.language !== undefined) {
+    if (req.query?.language !== "all") {
+      queries.language = req.query?.language?.toUpperCase();
+    }
   }
-  if (req.query?.app_type !== "all") {
-    queries.app_type = req.query?.app_type?.toLowerCase();
+  if (req.query?.app_type !== undefined) {
+    if (req.query?.app_type !== "all") {
+      queries.app_type = req.query?.app_type?.toLowerCase();
+    }
   }
   if (req.query?.day === "1") {
     queries.date = {

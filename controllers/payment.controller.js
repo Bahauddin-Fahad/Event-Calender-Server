@@ -2,12 +2,14 @@ const { getDb } = require("../utils/dbConnect");
 
 module.exports.getAllPayments = async (req, res) => {
   const db = getDb();
-
   let queries = {};
   const searchKey = req.query?.searchKey?.toLowerCase();
-  if (req.query?.language !== "all") {
-    queries.language = req.query?.language?.toUpperCase();
+  if (req.query?.language !== undefined) {
+    if (req.query?.language !== "all") {
+      queries.language = req.query?.language?.toUpperCase();
+    }
   }
+
   if (req.query?.searchKey) {
     if (req.query?.searchKey === "price") {
       queries[searchKey] = parseInt(req.query?.searchValue);
@@ -15,7 +17,7 @@ module.exports.getAllPayments = async (req, res) => {
       queries[searchKey] = req.query?.searchValue?.toLowerCase();
     }
   }
-
+  console.log(queries);
   try {
     const cursor = db.collection("Payments").find(queries).sort({ date: -1 });
     const payments = await cursor.toArray();

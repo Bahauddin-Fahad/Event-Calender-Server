@@ -3,9 +3,7 @@ const { getDb } = require("../../utils/dbConnect");
 
 module.exports.getAllPromotionData = async (req, res) => {
   const db = getDb();
-
   let queries = {};
-
   try {
     const cursor = db.collection("Promotions").find(queries).sort({ date: -1 });
     const promotionData = await cursor.toArray();
@@ -47,20 +45,27 @@ module.exports.editPromotionData = async (req, res) => {
     const promotionId = req.params.id;
     const promotionData = req.body;
     const filter = { _id: ObjectId(promotionId) };
+
     const options = { upsert: true };
     const updatedDoc = {
-      $set: {
-        promotionData,
-      },
+      $set: promotionData,
     };
+
     const result = await db
       .collection("Promotions")
       .updateOne(filter, updatedDoc, options);
-    res.status(200).send({
-      status: 200,
-      message: "Successfully edited the Bhakti Promotion data",
-      data: result,
-    });
+    if (result.modifiedCount === 1) {
+      res.status(200).send({
+        status: 200,
+        message: "Successfully edited the Bhakti Promotion data",
+        data: result,
+      });
+    } else {
+      res.status(200).send({
+        status: 200,
+        message: "Already edited the Data",
+      });
+    }
   } catch (error) {
     res.status(400).send({
       status: 400,

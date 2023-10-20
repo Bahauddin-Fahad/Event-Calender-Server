@@ -4,7 +4,7 @@ const { getDb } = require("../utils/dbConnect");
 module.exports.getAllOccasions = async (req, res) => {
   const db = getDb();
   const userId = req.params.userId;
-  const filter = { user_id: userId };
+  const filter = { user_id: parseInt(userId) };
 
   try {
     const cursor = db.collection("Occasions").find(filter).sort({ date: -1 });
@@ -51,18 +51,23 @@ module.exports.editOccasion = async (req, res) => {
     const filter = { _id: ObjectId(occassionId) };
     const options = { upsert: true };
     const updatedDoc = {
-      $set: {
-        occasionData,
-      },
+      $set: occasionData,
     };
     const result = await db
       .collection("Occasions")
       .updateOne(filter, updatedDoc, options);
-    res.status(200).send({
-      status: 200,
-      message: "Successfully edited the occasion data",
-      data: result,
-    });
+    if (result.modifiedCount === 1) {
+      res.status(200).send({
+        status: 200,
+        message: "Successfully edited the occasion data",
+        data: result,
+      });
+    } else {
+      res.status(200).send({
+        status: 200,
+        message: "Already edited the Data",
+      });
+    }
   } catch (error) {
     res.status(400).send({
       status: 400,

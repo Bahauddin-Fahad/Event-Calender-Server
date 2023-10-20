@@ -61,14 +61,6 @@ app.use("/consult-astrology", consultAstrologyRoute);
 app.use("/occasions", occasionRoute);
 app.use("/bhakti/promotion", bhaktiPromotionRoute);
 
-// async function run() {
-//   try {
-//
-//   } finally {
-//   }
-// }
-// run().catch(console.dir);
-
 app.get("/", (req, res) => {
   res.send("Hello From Bharat-Calendar!");
 });
