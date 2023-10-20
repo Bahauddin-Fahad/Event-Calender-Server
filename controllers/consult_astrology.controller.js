@@ -33,8 +33,7 @@ module.exports.getConsultAstrologyData = async (req, res) => {
       $lte: dateNow,
     };
   }
-  // console.log(req.query);
-  // console.log(queries);
+
   try {
     const cursor = db
       .collection("Consult_Astrology")
